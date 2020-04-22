@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Box, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PokemonAvatar from "./PokemonAvatar";
 import PokemonTypes from "./PokemonTypes";
 import PokemonStats from "./PokemonStats";
 import PokemonVersionControl from "./PokemonVersionControl";
+import PokemonMoveTable from "./PokemonMoveTable";
 import { convertDeciToInches, convertHectoToPounds } from "../utils/functions";
 
 const useStyles = makeStyles({
@@ -55,7 +56,6 @@ const PokemonInfo = ({ data, speciesData }) => {
             }),
         [speciesData.flavor_text_entries]
     );
-    console.log(englishFlavorTexts);
 
     let [pokemonVersion, setPokemonVersion] = useState(
         englishFlavorTexts[0].version.name
@@ -63,6 +63,22 @@ const PokemonInfo = ({ data, speciesData }) => {
     let [pokemonDescription, setPokemonDescription] = useState(
         englishFlavorTexts[0].flavor_text
     );
+
+    useEffect(() => {
+        if (englishFlavorTexts.length) {
+            setPokemonVersion(englishFlavorTexts[0].version.name);
+            setPokemonDescription(englishFlavorTexts[0].flavor_text);
+        }
+    }, [englishFlavorTexts]);
+
+    const pokemonFilteredMoves = useMemo(() => {
+        return data.moves.filter((move) => {
+            const isMoveCorrect = move.version_group_details.some((version) => {
+                return version.level_learned_at !== 0;
+            });
+            return isMoveCorrect;
+        });
+    }, [data.moves]);
 
     const pokemonVersionHandler = (e) => {
         setPokemonDescription(
@@ -137,17 +153,15 @@ const PokemonInfo = ({ data, speciesData }) => {
                             </span>
                         </Typography>
                     </Box>
-                    {/* <FormControl>
-                        <InputLabel>Version</InputLabel>
-                        <Select>
-                            <MenuItem value={10}>test</MenuItem>
-                        </Select>
-                    </FormControl> */}
                     <PokemonVersionControl
                         descriptions={englishFlavorTexts}
                         version={pokemonVersion}
                         handler={pokemonVersionHandler}
                     ></PokemonVersionControl>
+                    <PokemonMoveTable
+                        moves={pokemonFilteredMoves}
+                        version={pokemonVersion}
+                    ></PokemonMoveTable>
                 </Box>
             </Box>
         </Paper>

@@ -39,7 +39,6 @@ const nameConverter = (name) => {
 };
 
 const PokemonVersionControl = ({ descriptions, version, handler }) => {
-    console.log(descriptions);
     const filteredDescriptions = useMemo(() => {
         const totalTypes = [];
         return descriptions.filter((description) => {

@@ -12,7 +12,6 @@ const useStyles = makeStyles({
 });
 
 const PokemonAvatar = ({ image }) => {
-    console.log(image);
     const classes = useStyles();
     return (
         <Box

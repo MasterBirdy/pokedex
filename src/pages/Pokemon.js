@@ -18,7 +18,6 @@ const Pokemon = (props) => {
             ),
         ])
             .then((res) => {
-                console.log(res);
                 setPokemonData(res[0].data);
                 setPokemonSpeciesData(res[1].data);
             })
