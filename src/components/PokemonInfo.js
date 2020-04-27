@@ -8,9 +8,14 @@ import PokemonVersionControl from "./PokemonVersionControl";
 import PokemonMoveTable from "./PokemonMoveTable";
 import { convertDeciToInches, convertHectoToPounds } from "../utils/functions";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
-        padding: "20px",
+        padding: "0 20px 10px",
+        width: "auto",
+        [theme.breakpoints.up("sm")]: {
+            padding: "20px",
+            width: "auto",
+        },
     },
     category: {
         fontWeight: "500",
@@ -26,7 +31,35 @@ const useStyles = makeStyles({
         fontWeight: "500",
         fontSize: ".85rem",
     },
-});
+    grid: {
+        display: "grid",
+        gridTemplatesColumns: "1fr",
+        gridRowGap: ".5rem",
+        gridColumnGap: "1.25rem",
+        [theme.breakpoints.up("sm")]: {
+            gridTemplateColumns: "150px 1fr",
+            gridRowGap: ".25rem",
+        },
+    },
+    lastOrder: {
+        order: "1",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        [theme.breakpoints.up("sm")]: {
+            order: "0",
+            display: "block",
+        },
+    },
+    bigOrder: {
+        order: "2",
+    },
+    marginRight: {
+        [theme.breakpoints.up("sm")]: {
+            marginRight: "1.5rem",
+        },
+    },
+}));
 
 const PokemonInfo = ({ data, speciesData }) => {
     const classes = useStyles();
@@ -91,13 +124,8 @@ const PokemonInfo = ({ data, speciesData }) => {
 
     return (
         <Paper className={classes.root}>
-            <Box display="inline-block" style={{ marginRight: "1.5rem" }}>
-                <Box
-                    display="grid"
-                    gridTemplateColumns="150px 1fr"
-                    gridColumnGap="1.25rem"
-                    gridRowGap=".25rem"
-                >
+            <Box display="inline-block" className={classes.marginRight}>
+                <Box className={classes.grid}>
                     <Box
                         display="flex"
                         flexDirection="column"
@@ -119,10 +147,12 @@ const PokemonInfo = ({ data, speciesData }) => {
                             ></PokemonTypes>
                         </Box>
                     </Box>
-                    <PokemonStats
-                        values={orderedStats}
-                        type={data.types[0].type.name}
-                    ></PokemonStats>
+                    <Box className={classes.lastOrder}>
+                        <PokemonStats
+                            values={orderedStats}
+                            type={data.types[0].type.name}
+                        ></PokemonStats>
+                    </Box>
 
                     <Box
                         display="flex"
@@ -153,15 +183,27 @@ const PokemonInfo = ({ data, speciesData }) => {
                             </span>
                         </Typography>
                     </Box>
-                    <PokemonVersionControl
-                        descriptions={englishFlavorTexts}
-                        version={pokemonVersion}
-                        handler={pokemonVersionHandler}
-                    ></PokemonVersionControl>
-                    <PokemonMoveTable
-                        moves={pokemonFilteredMoves}
-                        version={pokemonVersion}
-                    ></PokemonMoveTable>
+                    <div
+                        className={[classes.lastOrder, classes.bigOrder].join(
+                            " "
+                        )}
+                    >
+                        <PokemonVersionControl
+                            descriptions={englishFlavorTexts}
+                            version={pokemonVersion}
+                            handler={pokemonVersionHandler}
+                        ></PokemonVersionControl>
+                    </div>
+                    <Box
+                        className={[classes.lastOrder, classes.bigOrder].join(
+                            " "
+                        )}
+                    >
+                        <PokemonMoveTable
+                            moves={pokemonFilteredMoves}
+                            version={pokemonVersion}
+                        ></PokemonMoveTable>
+                    </Box>
                 </Box>
             </Box>
         </Paper>

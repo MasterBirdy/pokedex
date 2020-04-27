@@ -121,7 +121,7 @@ const PokemonVersionControl = ({ descriptions, version, handler }) => {
         });
     }, [descriptions]);
     return (
-        <FormControl>
+        <FormControl style={{ width: "100%" }}>
             <InputLabel>Version</InputLabel>
             <Select value={version} onChange={handler}>
                 {filteredDescriptions.map((description) => {

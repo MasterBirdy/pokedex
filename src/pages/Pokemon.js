@@ -1,35 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { Box } from "@material-ui/core";
 import PokemonInfo from "../components/PokemonInfo";
 import axios from "axios";
-import { isEmpty } from "../utils/functions";
+import "../css/Pokemon.css";
+import { useParams } from "react-router-dom";
+import { ErrorContext } from "../contexts/ErrorContext";
 
 const Pokemon = (props) => {
     let [loading, setLoading] = useState(true);
     let [pokemonData, setPokemonData] = useState({});
     let [pokemonSpeciesData, setPokemonSpeciesData] = useState({});
 
+    const { hasError, makeError } = useContext(ErrorContext);
+    const { id } = useParams();
+    console.log("hiii");
     useEffect(() => {
         Promise.all([
-            axios.get(
-                `https://pokeapi.co/api/v2/pokemon/${props.match.params.id}`
-            ),
-            axios.get(
-                `https://pokeapi.co/api/v2/pokemon-species/${props.match.params.id}`
-            ),
+            axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`),
+            axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}`),
         ])
             .then((res) => {
+                console.log(res);
                 setPokemonData(res[0].data);
                 setPokemonSpeciesData(res[1].data);
+                setLoading(false);
             })
-            .catch((err) => console.log(err))
-            .finally(() => setLoading(false));
-    }, [props.match.params.id]);
+            .catch((err) => {
+                console.log(err);
+                console.log(err.message);
+                makeError(err.message);
+            });
+    }, [id]);
 
-    let pokemon = (
-        <div>
-            <span>loading!</span>
-        </div>
-    );
+    let pokemon = <div className="loader"></div>;
     if (!loading) {
         pokemon = (
             <PokemonInfo
@@ -38,7 +41,11 @@ const Pokemon = (props) => {
             ></PokemonInfo>
         );
     }
-    return <div>{pokemon}</div>;
+    return (
+        <Box display="flex" justifyContent="center" alignItems="center">
+            {!hasError && pokemon}
+        </Box>
+    );
 };
 
-export default Pokemon;
+export default React.memo(Pokemon);

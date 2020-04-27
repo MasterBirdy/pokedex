@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { ErrorContext } from "../contexts/ErrorContext";
 
 import {
     AppBar,
@@ -50,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar = () => {
     const styles = useStyles();
+    const { resetError } = useContext(ErrorContext);
     let history = useHistory();
     const [search, setSearch] = useState("");
 
@@ -61,18 +63,32 @@ const NavBar = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        history.push(`/pokemon/${search}`);
+        history.push(`/pokemon/${search.toLowerCase()}`);
+        resetError();
         setSearch("");
     };
 
     return (
         <Box mb={1}>
             <AppBar position="static">
-                <Toolbar>
+                <Toolbar style={{ position: "relative" }}>
                     <IconButton edge="start" color="inherit" aria-label="menu">
                         <MenuIcon></MenuIcon>
                     </IconButton>
-                    <Typography variant="h6">Pokedex</Typography>
+
+                    <Typography
+                        variant="h6"
+                        onClick={() => {
+                            resetError();
+                            history.push("/");
+                        }}
+                        style={{
+                            cursor: "pointer",
+                        }}
+                    >
+                        Pokedex
+                    </Typography>
+
                     <Box className={styles.search}>
                         <Box className={styles.searchIcon}>
                             <SearchIcon></SearchIcon>
