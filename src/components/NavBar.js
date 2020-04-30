@@ -13,6 +13,14 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import { fade, makeStyles } from "@material-ui/core/styles";
+import {
+    Drawer,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+} from "@material-ui/core";
+import HomeIcon from "@material-ui/icons/Home";
 
 const useStyles = makeStyles((theme) => ({
     search: {
@@ -47,13 +55,25 @@ const useStyles = makeStyles((theme) => ({
             width: "20ch",
         },
     },
+    list: {
+        width: "225px",
+    },
 }));
+
+const links = [
+    {
+        name: "Home",
+        link: "/",
+    },
+    { name: "Type Charts", link: "/types" },
+];
 
 const NavBar = () => {
     const styles = useStyles();
     const { resetError } = useContext(ErrorContext);
     let history = useHistory();
     const [search, setSearch] = useState("");
+    const [drawer, setDrawer] = useState(false);
 
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
@@ -63,19 +83,57 @@ const NavBar = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        history.push(`/pokemon/${search.toLowerCase()}`);
+        goToLink(`/pokemon/${search.toLowerCase()}`);
+    };
+
+    const goToLink = (link) => {
+        history.push(link);
         resetError();
         setSearch("");
     };
+
+    const toggleDrawer = (open) => (e) => {
+        setDrawer(open);
+    };
+
+    const list = (
+        <div className={styles.list}>
+            <List>
+                {links.map((link) => (
+                    <ListItem
+                        style={{ cursor: "pointer" }}
+                        key={link.name}
+                        onClick={() => goToLink(link.link)}
+                    >
+                        <ListItemIcon>
+                            <HomeIcon></HomeIcon>
+                        </ListItemIcon>
+                        <ListItemText primary={link.name}></ListItemText>
+                    </ListItem>
+                ))}
+            </List>
+        </div>
+    );
 
     return (
         <Box mb={1}>
             <AppBar position="static">
                 <Toolbar style={{ position: "relative" }}>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={toggleDrawer(true)}
+                    >
                         <MenuIcon></MenuIcon>
                     </IconButton>
-
+                    <Drawer
+                        anchor="left"
+                        open={drawer}
+                        onClose={toggleDrawer(false)}
+                    >
+                        {list}
+                    </Drawer>
                     <Typography
                         variant="h6"
                         onClick={() => {

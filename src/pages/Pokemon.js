@@ -13,21 +13,18 @@ const Pokemon = (props) => {
 
     const { hasError, makeError } = useContext(ErrorContext);
     const { id } = useParams();
-    console.log("hiii");
     useEffect(() => {
         Promise.all([
             axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`),
             axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}`),
         ])
             .then((res) => {
-                console.log(res);
                 setPokemonData(res[0].data);
                 setPokemonSpeciesData(res[1].data);
                 setLoading(false);
             })
             .catch((err) => {
                 console.log(err);
-                console.log(err.message);
                 makeError(err.message);
             });
     }, [id]);

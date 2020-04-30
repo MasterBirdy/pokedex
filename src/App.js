@@ -3,6 +3,7 @@ import { Box, Container } from "@material-ui/core";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import Pokemon from "./pages/Pokemon";
+import TypeCharts from "./pages/TypeCharts";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import ErrorContextProvider from "./contexts/ErrorContext";
@@ -11,10 +12,6 @@ import ErrorComponent from "./components/ErrorComponent";
 const useStyles = makeStyles({
     root: {
         height: "100vh",
-        background:
-            "radial-gradient(#efe5ff 2px, transparent 3px), radial-gradient(#ffece5 2px, transparent 3px), #fff",
-        backgroundPosition: "0 0, 20px 20px",
-        backgroundSize: "40px 40px",
     },
     container: {
         height: "90%",
@@ -45,6 +42,10 @@ const App = () => {
                                 <Route
                                     path="/pokemon/:id"
                                     component={Pokemon}
+                                ></Route>
+                                <Route
+                                    path="/types"
+                                    component={TypeCharts}
                                 ></Route>
                             </Switch>
                         </Container>
